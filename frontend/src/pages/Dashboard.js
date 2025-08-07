@@ -1,23 +1,21 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import axios from '../api/axiosInstance';
 
-const Dashboard = () => {
-  const navigate = useNavigate();
+function Dashboard() {
+  const [data, setData] = useState(null);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    navigate('/login');
-  };
+  useEffect(() => {
+    axios.get('/protected')
+      .then(res => setData(res.data))
+      .catch(err => console.error('Unauthorized', err));
+  }, []);
 
   return (
-    <div style={{ padding: '2rem', textAlign: 'center' }}>
-      <h1>Welcome to your Dashboard!</h1>
-      <p>You are successfully logged in.</p>
-      <button onClick={handleLogout} style={{ marginTop: '1rem', padding: '10px 20px', cursor: 'pointer' }}>
-        Logout
-      </button>
+    <div>
+      <h2>Dashboard (Protected)</h2>
+      <pre>{JSON.stringify(data, null, 2)}</pre>
     </div>
   );
-};
+}
 
 export default Dashboard;
